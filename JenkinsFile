@@ -1,0 +1,61 @@
+pipeline {
+    agent any
+
+    tools {
+        nodejs 'node20'
+    }
+
+    stages {
+        stage('Connect to Git') {
+            steps {
+                echo 'Connecting to GitHub repository...'
+                checkout([$class: 'GitSCM',
+                    branches: [[name: '*/main']],
+                    userRemoteConfigs: [[url: 'https://github.com/Vo9va/google_test.git']]
+                ])
+            }
+        }
+
+        stage('Install') {
+            steps {
+                echo 'Installing dependencies...'
+                sh 'npm install'
+            }
+        }
+
+        stage('Run AI Script') {
+            steps {
+                withCredentials([
+                    string(credentialsId: 'JIRA_TOKEN', variable: 'JIRA_TOKEN'),
+                    string(credentialsId: 'GEMINI_API_KEY', variable: 'GEMINI_API_KEY'),
+                    string(credentialsId: 'JIRA_EMAIL', variable: 'JIRA_EMAIL'),
+                    string(credentialsId: 'TR_DOMAIN', variable: 'TR_DOMAIN'),
+                    usernamePassword(credentialsId: 'TR_USER_KEY',
+                                     usernameVariable: 'TR_USER',
+                                     passwordVariable: 'TR_KEY')
+                ]) {
+                    script {
+                        try {
+                            echo "🚀 Starting AI generation for: ${issueKey}"
+
+                            sh "node testJiraTestRail.js ${issueKey}"
+
+                            echo "✅ Script finished successfully (Process 0)"
+                        } catch (Exception e) {
+                            echo "❌ Script failed (Process 1)"
+                            currentBuild.result = 'FAILURE'
+                            error("Stopping pipeline due to script error: ${e.message}")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo '🧹 Cleaning up workspace...'
+            deleteDir()
+        }
+    }
+}
