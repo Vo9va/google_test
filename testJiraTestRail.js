@@ -21,7 +21,7 @@ async function generateTests() {
   let aiCases;
   let targetSectionId;
 
-  // try {
+  try {
     console.log(`🔍 Fetching Main Jira issue: ${issueKey}...`);
 
     const jiraUrl = `https://${JIRA_DOMAIN}/rest/api/3/issue/${issueKey}`;
@@ -44,7 +44,7 @@ async function generateTests() {
             });
 
             combinedContextLinkedTasks.push(
-              `RELATED TASK (${linkedKey}): Description: ${JSON.stringify(linkedRes.data.fields.description)}`
+                `RELATED TASK (${linkedKey}): Description: ${JSON.stringify(linkedRes.data.fields.description)}`
             );
           } catch (e) {
             console.log(`⚠️ Could not fetch linked task ${linkedKey}`);
@@ -110,93 +110,93 @@ async function generateTests() {
     // --- TESTRAIL: publish testcase ---
     console.log(`🚀Uploading ${aiCases.length} test cases to TestRail...`);
 
-    // try {
+    try {
       // Get all sections in the project to find the target section
-      // const sectionsUrl = `https://${TR_DOMAIN}/index.php?/api/v2/get_sections/${TR_PROJECT_ID}&suite_id=1`;
-      // const sectionsResponse = await axios.get(sectionsUrl, { auth: { username: TR_USER, password: TR_KEY } });
-      // const sections = sectionsResponse.data.sections || sectionsResponse.data;
-      //
-      // // Find existing section that matches the issueKey in its name
-      // const existingSection = sections.find((s) => s.parent_id === Number(TR_SECTION_ID) && s.name.includes(issueKey));
+      const sectionsUrl = `https://${TR_DOMAIN}/index.php?/api/v2/get_sections/${TR_PROJECT_ID}&suite_id=1`;
+      const sectionsResponse = await axios.get(sectionsUrl, { auth: { username: TR_USER, password: TR_KEY } });
+      const sections = sectionsResponse.data.sections || sectionsResponse.data;
 
-      // if (existingSection) {
-      //   targetSectionId = existingSection.id;
-      //   console.log(`♻️  Found folder: "${existingSection.name}" (ID: ${targetSectionId}). Cleaning old cases...`);
+      // Find existing section that matches the issueKey in its name
+      const existingSection = sections.find((s) => s.parent_id === Number(TR_SECTION_ID) && s.name.includes(issueKey));
+
+      if (existingSection) {
+        targetSectionId = existingSection.id;
+        console.log(`♻️  Found folder: "${existingSection.name}" (ID: ${targetSectionId}). Cleaning old cases...`);
 
         // Get
-    //     const getCasesUrl = `https://${TR_DOMAIN}/index.php?/api/v2/get_cases/${TR_PROJECT_ID}&section_id=${targetSectionId}`;
-    //     const casesResponse = await axios.get(getCasesUrl, { auth: { username: TR_USER, password: TR_KEY } });
-    //     const oldCases = casesResponse.data.cases || casesResponse.data;
-    //
-    //     if (oldCases.length > 0) {
-    //       console.log(`🗑️  Deleting ${oldCases.length} old test cases...`);
-    //       // Delete each old case
-    //       for (const oldCase of oldCases) {
-    //         await axios.post(
-    //           `https://${TR_DOMAIN}/index.php?/api/v2/delete_case/${oldCase.id}`,
-    //           {},
-    //           { auth: { username: TR_USER, password: TR_KEY } }
-    //         );
-    //       }
-    //       console.log(`✅ Folder cleaned.`);
-    //     }
-    //   } else {
-    //     // Create new section in TESTRAIL
-    //     const createSectionUrl = `https://${TR_DOMAIN}/index.php?/api/v2/add_section/${TR_PROJECT_ID}`;
-    //     const newSectionName = `${issueKey}: ${issueSummary}`;
-    //
-    //     const sectionResponse = await axios.post(
-    //       createSectionUrl,
-    //       {
-    //         name: newSectionName,
-    //         parent_id: Number(TR_SECTION_ID),
-    //       },
-    //       { auth: { username: TR_USER, password: TR_KEY } }
-    //     );
-    //
-    //     targetSectionId = sectionResponse.data.id;
-    //     console.log(`✅ Folder created: "${newSectionName}" (ID: ${targetSectionId})`);
-    //   }
-    // } catch (err) {
-    //   console.error(`❌ Error during TestRail sync:`, err.response?.data || err.message);
-    //   throw err;
-    // }
-    //
-    // for (const testCase of aiCases) {
-    //   try {
-    //     const trUrl = `https://${TR_DOMAIN}/index.php?/api/v2/add_case/${targetSectionId}`;
-    //     const trPayload = {
-    //       title: testCase.title,
-    //       template_id: 2, // 2 = Test Case (Steps)
-    //       type_id: 9, // 9 = Regression
-    //       custom_preconds: testCase.preconditions,
-    //       custom_steps_separated: testCase.steps.map((s) => ({
-    //         content: s.content,
-    //         expected: s.expected,
-    //       })),
-    //       custom_ui_automation_type: 4, // 4 = Pending
-    //       custom_ui_mobile_automation_type: 4, // 4 = Pending
-    //       custom_ui_application_automation_type: 4, // 4 = Pending
-    //       custom_automation_type: 4, // 4 = Pending
-    //       custom_status: 0, // 0 = In Progress
-    //       custom_creator: 10, // 10 - Unknown
-    //       refs: issueKey,
-    //     };
-    //
-    //     const trResponse = await axios.post(trUrl, trPayload, {
-    //       auth: { username: TR_USER, password: TR_KEY },
-    //     });
-    //
-    //     console.log(`✅ Success: "${testCase.title}" | ID: C${trResponse.data.id}`);
-    //   } catch (err) {
-    //     const errorDetail = err.response?.data?.error || err.message;
-    //     console.error(`❌ Failed to upload "${testCase.title}":`, errorDetail);
-    //   }
-  //   }
-  //
-  //   console.log('\n✨ All done! All scenarios processed.');
-  // } catch (error) {
+        const getCasesUrl = `https://${TR_DOMAIN}/index.php?/api/v2/get_cases/${TR_PROJECT_ID}&section_id=${targetSectionId}`;
+        const casesResponse = await axios.get(getCasesUrl, { auth: { username: TR_USER, password: TR_KEY } });
+        const oldCases = casesResponse.data.cases || casesResponse.data;
+
+        if (oldCases.length > 0) {
+          console.log(`🗑️  Deleting ${oldCases.length} old test cases...`);
+          // Delete each old case
+          for (const oldCase of oldCases) {
+            await axios.post(
+                `https://${TR_DOMAIN}/index.php?/api/v2/delete_case/${oldCase.id}`,
+                {},
+                { auth: { username: TR_USER, password: TR_KEY } }
+            );
+          }
+          console.log(`✅ Folder cleaned.`);
+        }
+      } else {
+        // Create new section in TESTRAIL
+        const createSectionUrl = `https://${TR_DOMAIN}/index.php?/api/v2/add_section/${TR_PROJECT_ID}`;
+        const newSectionName = `${issueKey}: ${issueSummary}`;
+
+        const sectionResponse = await axios.post(
+            createSectionUrl,
+            {
+              name: newSectionName,
+              parent_id: Number(TR_SECTION_ID),
+            },
+            { auth: { username: TR_USER, password: TR_KEY } }
+        );
+
+        targetSectionId = sectionResponse.data.id;
+        console.log(`✅ Folder created: "${newSectionName}" (ID: ${targetSectionId})`);
+      }
+    } catch (err) {
+      console.error(`❌ Error during TestRail sync:`, err.response?.data || err.message);
+      throw err;
+    }
+
+    for (const testCase of aiCases) {
+      try {
+        const trUrl = `https://${TR_DOMAIN}/index.php?/api/v2/add_case/${targetSectionId}`;
+        const trPayload = {
+          title: testCase.title,
+          template_id: 2, // 2 = Test Case (Steps)
+          type_id: 9, // 9 = Regression
+          custom_preconds: testCase.preconditions,
+          custom_steps_separated: testCase.steps.map((s) => ({
+            content: s.content,
+            expected: s.expected,
+          })),
+          custom_ui_automation_type: 4, // 4 = Pending
+          custom_ui_mobile_automation_type: 4, // 4 = Pending
+          custom_ui_application_automation_type: 4, // 4 = Pending
+          custom_automation_type: 4, // 4 = Pending
+          custom_status: 0, // 0 = In Progress
+          custom_creator: 10, // 10 - Unknown
+          refs: issueKey,
+        };
+
+        const trResponse = await axios.post(trUrl, trPayload, {
+          auth: { username: TR_USER, password: TR_KEY },
+        });
+
+        console.log(`✅ Success: "${testCase.title}" | ID: C${trResponse.data.id}`);
+      } catch (err) {
+        const errorDetail = err.response?.data?.error || err.message;
+        console.error(`❌ Failed to upload "${testCase.title}":`, errorDetail);
+      }
+    }
+
+    console.log('\n✨ All done! All scenarios processed.');
+  } catch (error) {
     console.error('💥 Critical Error:', error.response?.data || error.message);
-  // }
+  }
 }
 generateTests();
