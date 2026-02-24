@@ -14,7 +14,7 @@ const {
 } = process.env;
 
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-
+let createdCaseIds = []
 async function generateTests() {
   const issueKey = 'SCRUM-1';
   const combinedContextLinkedTasks = [];
@@ -188,6 +188,55 @@ async function generateTests() {
         });
 
         console.log(`✅ Success: "${testCase.title}" | ID: C${trResponse.data.id}`);
+
+        // Цикл для відправки всіх кейсів по черзі
+        for (const testCase of aiCases) {
+          const trResponse = await axios.post(trUrl, {
+            title: testCase.title,
+            custom_preconds: testCase.preconditions,
+            custom_steps_separated: testCase.steps.map(s => ({
+              content: s.content,
+              expected: s.expected
+            }))
+          }, {
+            auth: { username: TR_USER, password: TR_KEY }
+          });
+
+          createdCaseIds.push(trResponse.data.id);
+          console.log(`✅ Створено: C${trResponse.data.id} - ${testCase.title}`);
+        }
+
+        console.log(`💬 [4/4] Додавання звіту в Jira...`);
+
+        // Формуємо список посилань для коментаря Jira (формат ADF)
+        const linksItems = trResponse.data.id.map(id => ({
+          type: "paragraph",
+          content: [
+            { type: "text", text: `🔹 Кейс ` },
+            {
+              type: "text",
+              text: `C${id}`,
+              marks: [{ type: "link", attrs: { href: `https://${TR_DOMAIN}/index.php?/cases/view/${id}` } }]
+            },
+            { type: "text", text: ` додано в TestRail.` }
+          ]
+        }));
+
+        await axios.post(`${jiraUrl}/rest/api/3/issue/${issueKey}/comment`, {
+          body: {
+            type: "doc",
+            version: 1,
+            content: [
+              {
+                type: "paragraph",
+                content: [{ type: "text", text: `✅ Автоматизація завершена. Створено ${createdCaseIds.length} кейсів:`, marks: [{ type: "strong" }] }]
+              },
+              ...linksItems
+            ]
+          }
+        }, { auth: { username: JIRA_EMAIL, password: JIRA_TOKEN } });
+
+        console.log(`🏁 Готово! Всі кейси в TestRail, звіт у Jira.`);
       } catch (err) {
         const errorDetail = err.response?.data?.error || err.message;
         console.error(`❌ Failed to upload "${testCase.title}":`, errorDetail);
