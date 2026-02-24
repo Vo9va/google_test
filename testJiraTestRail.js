@@ -2,7 +2,7 @@ const axios = require('axios');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const {
-  GEMINI_API_KEY = 'AIzaSyCEYSEmobEq54kcXx53lEJ4YCxflFDqEpw',
+  GEMINI_API_KEY = 'AIzaSyDje0jnz-XlruJsRYK4L-RVqJNIUQius5g',
   JIRA_DOMAIN = 'tkacenkovladimir452.atlassian.net',
   JIRA_EMAIL = 'tkacenkovladimir452@gmail.com',
   JIRA_TOKEN = 'ATATT3xFfGF0nzoV2dHH6K0JomMSJNTr4GqclUkEpIiI7sgPrT6UiBi6ANLXMhUPEChEE7LnaBiA-9D9_OXZEvyNH8izto7DyFhsjEOMN7_C5bj1E_ZopptO2zv0GfvzfK1nKIyFPxh5NJUHRlHt-gkFydflhp9yWkr6hbmxbT3vgvPLdIcuNvg=06C0B6A5',
