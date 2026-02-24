@@ -2,13 +2,13 @@ const axios = require('axios');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const {
-  GEMINI_API_KEY = 'AIzaSyDje0jnz-XlruJsRYK4L-RVqJNIUQius5g',
-  JIRA_DOMAIN = 'tkacenkovladimir452.atlassian.net',
-  JIRA_EMAIL = 'tkacenkovladimir452@gmail.com',
-  JIRA_TOKEN = 'ATATT3xFfGF0nzoV2dHH6K0JomMSJNTr4GqclUkEpIiI7sgPrT6UiBi6ANLXMhUPEChEE7LnaBiA-9D9_OXZEvyNH8izto7DyFhsjEOMN7_C5bj1E_ZopptO2zv0GfvzfK1nKIyFPxh5NJUHRlHt-gkFydflhp9yWkr6hbmxbT3vgvPLdIcuNvg=06C0B6A5',
+  GEMINI_API_KEY = process.env.GEMINI_API_KEY,
+  JIRA_DOMAIN = process.env.JIRA_DOMAIN,
+  JIRA_EMAIL = process.env.JIRA_EMAI,
+  JIRA_TOKEN = process.env.JIRA_TOKEN,
   TR_DOMAIN = 'blackrockng.testrail.io',
-  TR_USER = 'qa@protonixltd.com',
-  TR_KEY = 'Qwerty123@',
+  TR_USER = process.env.TR_USER,
+  TR_KEY = process.env.TR_KEY,
   TR_SECTION_ID = '127951',
   TR_PROJECT_ID = '1',
 } = process.env;
