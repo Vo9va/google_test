@@ -3,7 +3,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
   const JIRA_DOMAIN = process.env.JIRA_DOMAIN;
-  const JIRA_EMAIL = process.env.JIRA_EMAI;
+  const JIRA_EMAIL = process.env.JIRA_EMAIL;
   const JIRA_TOKEN = process.env.JIRA_TOKEN;
   const TR_DOMAIN = 'blackrockng.testrail.io';
   const TR_USER = process.env.TR_USER;
@@ -15,8 +15,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 let createdCaseIds = []
 async function generateTests() {
-  console.log("ggggg", process.argv[2])
-  const issueKey = 'SCRUM-1';
+  const issueKey = process.argv[2];
   const combinedContextLinkedTasks = [];
   let aiCases;
   let targetSectionId;
