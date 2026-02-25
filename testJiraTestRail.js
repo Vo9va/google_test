@@ -2,7 +2,7 @@ const axios = require('axios');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-  const JIRA_DOMAIN = process.env.JIRA_DOMAIN;
+  const JIRA_DOMAIN = 'tkacenkovladimir452.atlassian.net';
   const JIRA_EMAIL = process.env.JIRA_EMAIL;
   const JIRA_TOKEN = process.env.JIRA_TOKEN;
   const TR_DOMAIN = 'blackrockng.testrail.io';
