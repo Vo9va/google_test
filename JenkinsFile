@@ -38,7 +38,7 @@ pipeline {
                         try {
                             echo "🚀 Starting AI generation for: ${issueKey}"
 
-                            sh "node testJiraTestRail.js ${issueKey}"
+                            sh "node ai_test_main.js ${issueKey}"
 
                             echo "✅ Script finished successfully (Process 0)"
                         } catch (Exception e) {
